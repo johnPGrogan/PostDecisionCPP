@@ -435,7 +435,7 @@ function PlotBetaFigs(respWin,showErrBars, faceAlpha,colours, lines, iFs)
         if i==1; title([labels.cond(iC); names.(factors{iF})]);
         else; title(names.(factors{iF})); end
         ylim(ylims(i,:));
-        xlabel('time from initial RT (ms');
+        xlabel('time from initial RT (ms)');
         xlim(respWin); %ylim(ylims(3,:));
 
         % do stats
@@ -494,7 +494,7 @@ function PlotBetaFigs(respWin,showErrBars, faceAlpha,colours, lines, iFs)
             end
         end
         if iC==1
-            ylabel('\beta lateralisation');
+            ylabel('\beta lateralisation (\muV/m^2)');
             hold on;
 %             emptyLegend(2, { {'-'}, {':'}}, {'Color','k','LineWidth',2}, labels.CoM, {'Location','Best'});
             legend([h{:,1}],labels.(factors{iF}), 'Location','Best');

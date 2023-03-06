@@ -47,7 +47,7 @@ slopesCertainCoM = z - [.115 .3 .6]'; % still has to hit -c
 % labels.bounds = {'confidence boundary','initial decision boundary', 'confidence boundary'};
 labels.bounds = {'-c','0', 'confidence threshold'};
 labels.certainty = {'maybe','certain'};
-labels.confidence =  {'Certain CoM','maybe CoM', 'maybe no-CoM', 'certain no-CoM'};
+labels.confidence =  {'certain CoM','maybe CoM', 'maybe no-CoM', 'certain no-CoM'};
 cols = [  0    0.4470    0.8; 0.8500    0.3250    0.0980; ]; % maybe; certain
 
 %% maybe trials
@@ -109,7 +109,11 @@ xlabel('time from initial decision (ms)')
 xticks([0 .5 1]); xticklabels(xticks*1000);
 ylabel('CPP = absolute decision variable')
 % ylim([0 c+.02]);
-legend(h, labels.confidence,'Location','Best','AutoUpdate','off');
+% add in thin/thick lines for legend
+hold on
+h1 = plot(NaN(2), NaN(2), '-k');
+h1(2).LineWidth = 4;
+legend([h; h1], [labels.confidence, 'individual trials', 'trial-average'],'Location','Best','AutoUpdate','off');
 yticks([-c z c]); yticklabels(labels.bounds); ytickangle(0);
 
 % super the others?

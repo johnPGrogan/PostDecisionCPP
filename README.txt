@@ -45,6 +45,7 @@ Data files required (see Data/ component in OSF project https://osf.io/4dqkz/)
 		BehDataLoad.mat
 		CPPAnalysys_CSD_.mat
 		CPPAnalysis_CSD_ExcluCoMFromCert.mat
+		CPPPeakLatency.m
 		DoFFTCSD.mat
 		ExtractEpochs.mat
 		FlagArtefacts3.mat

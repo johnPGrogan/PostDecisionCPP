@@ -293,7 +293,7 @@ doStats=1;
             xticks(-1000:250:500); xtickangle(0);
             xline(0);yline(0);
             xlim(respWin); %ylim(ylims(2,:));
-            xlabel('time to RT (ms)');
+            xlabel('time to initial RT (ms)');
             if iC==1; ylabel('CPP \muV/m^2'); end
             ylim(ylims(1,:));
     
