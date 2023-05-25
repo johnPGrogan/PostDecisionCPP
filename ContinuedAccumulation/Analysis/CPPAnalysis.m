@@ -206,9 +206,9 @@ if ~excludeCoMFromCert % only do second-order if CoM trials are included,
     
     % don't excludeCoMFromCert for this
     % how do Ev & 1st-Acc affect certainty,CoM and final RT?
-    paperFormulaeBeh = {'certainty ~ 1 + cond*acc + (1 | pp)';
+    paperFormulaeBeh = {'confInR1 ~ 1 + cond*acc + (1 | pp)';
          'CoMLogistic ~ 1 + cond*acc + (1 | pp)';
-         'confRTLog ~ 1 + cond*acc + (1 | pp)';};
+         'RTLog ~ 1 + cond*acc + (1 | pp)';};
     paperBehFits = cellfun(fitglmeCell, paperFormulaeBeh,'UniformOutput',0);
 
     % post-choice/2nd order CPP

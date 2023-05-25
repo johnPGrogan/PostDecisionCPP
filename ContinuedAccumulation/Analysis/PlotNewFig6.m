@@ -78,7 +78,7 @@ data.lines.styles = styles;
 data.alphas = table2struct(array2table([.2 .2 .2 .1 .2],'VariableNames',data.factors));
 
 data.names.confInR1 = 'confidence-in-initial-choice';
-data.names.certainty = 'confidence-in-final-choice';
+data.names.certainty = 'final-certainty';
 data.names.conf3 = 'confidence-in-initial-choice: binned';
 data.names.CoM = 'change-of-mind';
 data.names.acc = 'initial accuracy';

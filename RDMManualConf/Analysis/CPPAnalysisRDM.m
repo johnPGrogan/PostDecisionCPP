@@ -538,8 +538,13 @@ respCueLocked(:,:,:,end+1) = diff(respCueLocked(:,:,:,[1 end]),[],4) * diffFlips
 respLocked = groupMeans(cppFiltDur,4,repmat(permute(behDataByDur.(factors{i}),[1,4,2,3]),1, size(cpp,2),1,1)); %[pp t dur factor]
 respLocked(:,:,:,end+1) = diff(respLocked(:,:,:,[1 end]),[],4) * diffFlips(i); % get diff
     
-respTopo = groupMeans(cppMeanTopo_100,2,repmat(behData.stimDur,1,1,128));
-respCueTopo = groupMeans(respCueMeanTopo(:,:,:,10),2,repmat(behData.stimDur,1,1,128));
+respTopo = groupMeans(cppMeanTopo_100,2,repmat(behData.stimDur,1,1,128),'dim'); %[pp dur chan tr]
+respCueTopo = groupMeans(respCueMeanTopo(:,:,:,10),2,repmat(behData.stimDur,1,1,128),'dim'); %[pp dur chan tr]
+facByDur = repmat(permute(groupMeans(behData.(factors{i}),2,behData.stimDur,'dim'),[1 2 4 3]),1,1,128,1); %[pp dur 128 tr]
+respTopo = groupMeans(respTopo, 4, facByDur); %[pp dur ch fac]
+respTopo = diff(respTopo(:,:,:,[1 end]),[],4); %[pp dur ch] - factor effect
+respCueTopo = groupMeans(respCueTopo, 4, facByDur); %[pp dur ch fac]
+respCueTopo = diff(respCueTopo(:,:,:,[1 end]),[],4); %[pp dur ch] - factor effect
 
 rcWin = [-800 0];
 rWin = [-1200 0];
@@ -589,7 +594,7 @@ for iD = 1:3
     end
     
     
-    % topoplot - no conditions
+    % topoplot - now the condition effect
     subplot(3,4,iD*4);
     topoplot(sq(nanmean(respTopo(:,iD,:),1)),...
         eeg.chanlocs, 'electrodes','off','colormap',cmap,'maplimits', mapLims,...
@@ -1170,7 +1175,7 @@ for i = 1:3 % duration
     tInds = isBetween(eeg.stimTimes, tWins(i,:));
     hold on;
     h = errorBarPlot(sq(cppByDurCert(:,tInds,i,:)),'area',1,'xaxisvalues',eeg.stimTimes(tInds),'plotargs',{'LineWidth',2});
-    if 0%showErrBars==0
+    if showErrBars==0
         for j=1:size(h,1) % still show diff wave
             h{j,2}.Visible='off'; 
 %             h{j,1}.LineWidth = 2;
@@ -1184,8 +1189,8 @@ for i = 1:3 % duration
 
     % regress?
     if 1%doStats % regress factor within this cond, at every 100ms bin
-        u=[350 500 750];% stimdur values
-
+%         u=[350 500 750];% stimdur values
+        u = unique(regTab.stimDur(~isnan(regTab.stimDur)));
         if ~exist('regTab','var')
             regTab = table;
             regTab.pp = nanzscore(col(behData.pp)); % participant for RE
@@ -1202,7 +1207,7 @@ for i = 1:3 % duration
         for iT = 1:length(times)-1
             % take mean within window
             regTab.amplWin = nanzscore(col(nanmean(cppStimFilt(:,isBetween(eeg.stimTimes, times([iT iT+1])),:),2))); % use mean
-            if sum(~isnan(regTab.amplWin)) > 100 % if at least 100 data
+            if sum(~isnan(regTab.amplWin(regTab.stimDur==u(i)))) > 100 % if at least 100 data
                 fit = fitglme(regTab(regTab.stimDur==u(i),:), formula);
                 stats(:,iT,2) = fit.Coefficients.pValue(2:end); % p-value
             end

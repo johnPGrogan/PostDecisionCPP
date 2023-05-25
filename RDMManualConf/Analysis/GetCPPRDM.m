@@ -22,6 +22,7 @@ if useCSD
 else
     fileInfo.respFolder = 'D:\TCD\Projects\RDMManualConf\Data\Resplock\';
     fileInfo.respCueFolder = 'D:\TCD\Projects\RDMManualConf\Data\RespCueLock\';
+    fileInfo.interpFolder = 'D:\TCD\Projects\RDMManualConf\Data\Interp\'; % not projectsHDD
     loadName = 'PreRespMeanVoltage.mat';
     saveName = 'GetCPP.mat';
     intpSuffix = '_intp.mat';
@@ -37,8 +38,8 @@ eeg.respTimes = ((-768:768) ./ 512) .* 1000; % times
 eeg.nRespSamples = length(eeg.respTimes);
 
 % resp cue locked times
-eeg.respCueWindowS = (-512:256) + 540; % to add on to evOnset time
-eeg.respCueTimes = ((-512:256) ./ 512) .* 1000; % times
+eeg.respCueWindowS = (-512:512) + 540; % to add on to evOnset time
+eeg.respCueTimes = ((-512:512) ./ 512) .* 1000; % times
 eeg.nRespCueSamples = length(eeg.respCueTimes);
 
 %%
@@ -80,23 +81,25 @@ end
 cppChanNames = {'A4','A19','A20','A21','A22','A32','A31','A30','A29','A16','A17','A18','A5'};
 [~, cppChanInds] = ismember(cppChanNames, eeg.chanNames);
 
-cmap = 'jet'; % crameri('vik');
-
-figure();
-topoplot(nanmean(preRespMeans(:,~ppsToExclude),2),...
-    eeg.chanlocs, 'electrodes','off','colormap',cmap,...
-    'emarker',{'.','k',10,1}, 'emarker2', {cppChanInds, '.','k',10,1});
-colorbar
-
 
 % pick 5 electrode sites of the positive signal centroparietally
 if useCSD
     chans5 = {'A4','A19','A20','A21','A22'}; % CSD - from max
 else
-    chans5 = {'A2','A3','A4','D15','D16','B2'}; % Wouter's ones
+    chans5 = {'A4','A19','A20','A5','A32'}; % voltage - from max
 end
 
 [~, chans5Inds] = ismember(chans5, eeg.chanNames);
+
+cmap = 'jet'; % crameri('vik');
+
+figure();
+topoplot(nanmean(preRespMeans(:,~ppsToExclude),2),...
+    eeg.chanlocs, 'electrodes','off','colormap',cmap,...
+    'emarker',{'.','k',10,1}, 'emarker2', {chans5Inds, '.','k',10,1});
+colorbar
+
+
 
 keyboard; %%%%%% edit these picked channels
 

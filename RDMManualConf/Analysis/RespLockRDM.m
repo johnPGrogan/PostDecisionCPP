@@ -15,6 +15,7 @@ if useCSD
     intpName = '_intp_csd.mat';
 else
     fileInfo.respFolder = 'D:\TCD\Projects\RDMManualConf\Data\Resplock\';
+    fileInfo.interpFolder = 'D:\TCD\Projects\RDMManualConf\Data\Interp\'; % not projectsHDD
     intpName = '_intp.mat';
 end
 

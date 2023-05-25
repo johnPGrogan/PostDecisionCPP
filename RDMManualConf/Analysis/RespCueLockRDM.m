@@ -28,8 +28,8 @@ load('./Saves/FlagArtefacts.mat','isFlagged','art');
 [respCueSamp] = deal(NaN(fileInfo.maxTr, fileInfo.nPP));
 
 % 540 is 1050ms, i.e. sample of stimOnset
-eeg.respCueWindowS = (-512:256) + 540; % to add on to evOnset time
-eeg.respCueTimes = ((-512:256) ./ 512) .* 1000; % times
+eeg.respCueWindowS = (-512:512) + 540; % to add on to evOnset time
+eeg.respCueTimes = ((-512:512) ./ 512) .* 1000; % times
 eeg.nRespCueSamples = length(eeg.respCueTimes);
 
 for iPP = 1:fileInfo.nPP

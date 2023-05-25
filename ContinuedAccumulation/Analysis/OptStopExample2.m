@@ -45,10 +45,10 @@ slopesCertainCoM = z - [.115 .3 .6]'; % still has to hit -c
 
 
 % labels.bounds = {'confidence boundary','initial decision boundary', 'confidence boundary'};
-labels.bounds = {'-c','0', 'confidence threshold'};
+labels.bounds = {'-c','0', 'certainty threshold'};
 labels.certainty = {'maybe','certain'};
 labels.confidence =  {'certain CoM','maybe CoM', 'maybe no-CoM', 'certain no-CoM'};
-cols = [  0    0.4470    0.8; 0.8500    0.3250    0.0980; ]; % maybe; certain
+cols = [ 0.8500    0.3250    0.0980; 0    0.4470    0.8;]; % certain; maybe; 
 
 %% maybe trials
 
@@ -99,11 +99,13 @@ allY = cat(3, dvCertainCoM, dvMaybeCoM, dvMaybe, dvCertain); % [certain CoM, may
 
 nCols = 4;
 cols2 = flipud(crameri('roma',nCols));
+if nCols==2; cols2=cols; end
 
+lineStyles = {':','-'}; % mean, indiv
 figure();
 % subplot(2,1,1);
 set(gca,'ColorOrder', cols2,'nextplot','replacechildren');
-h = plot(t2, sq(nanmean(abs(allY),1)), '-','LineWidth', 4);
+h = plot(t2, sq(nanmean(abs(allY(:,:,1:nCols)),1)), lineStyles{1},'LineWidth', 5);
 yline(c, ':k');
 xlabel('time from initial decision (ms)')
 xticks([0 .5 1]); xticklabels(xticks*1000);
@@ -111,15 +113,16 @@ ylabel('CPP = absolute decision variable')
 % ylim([0 c+.02]);
 % add in thin/thick lines for legend
 hold on
-h1 = plot(NaN(2), NaN(2), '-k');
+h1 = plot(NaN(2), NaN(2), 'LineStyle', lineStyles{2}, 'Color', 'k','LineWidth',1.5);
 h1(2).LineWidth = 4;
-legend([h; h1], [labels.confidence, 'individual trials', 'trial-average'],'Location','Best','AutoUpdate','off');
+h1(2).LineStyle = lineStyles{1};
+legend([h; h1], [labels.confidence(1:nCols), 'individual trials', 'trial-average'],'Location','Best','AutoUpdate','off');
 yticks([-c z c]); yticklabels(labels.bounds); ytickangle(0);
 
 % super the others?
 hold on;
-for i = 1:4
-    h1 = plot(t2, abs(allY(:,:,i)), 'Color', [cols2(i,:) 1]);
+for i = 1:nCols
+    h1 = plot(t2, abs(allY(:,:,i)), 'Color', [cols2(i,:) 1], 'LineWidth', 1.5, 'LineStyle', lineStyles{2});
     for j = 1:size(h1,1)
 %         h1(j).Color(4) = .2 / ceil(j/2) + .1;
 %         h1(j).LineWidth =  1-  .5/ceil(j/2);

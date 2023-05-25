@@ -112,7 +112,7 @@ function PlotSSVEPFigs(respWin, showErrBars, faceAlpha, colours, lines, iFs)
     labels.conf3 = {'certain/probably CoM', 'maybe CoM/no-CoM', 'probably/certain no-CoM'};
     labels.certainty = {'maybe CoM/no-CoM', 'probably CoM/no-CoM', 'certain CoM/no-CoM'};
     names.confInR1 = 'confidence-in-initial-choice';
-    names.certainty = 'confidence-in-final-choice';
+    names.certainty = 'final-certainty';
     names.conf3 = 'confidence-in-initial-choice: binned';
     names.CoM = 'change-of-mind';
 

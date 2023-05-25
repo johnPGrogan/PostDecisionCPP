@@ -21,7 +21,10 @@ set(0,'DefaultAxesFontSize',14);
 
     colours.certainty = [  0    0.4470    0.8; .0    0.7510   0;  0.8500    0.3250    0.0980; .2 .2 .2];
 %     colours.certainty = [0.3731    0.8864    0.7382; 0.6115    0.5872    0.1107; 0.5505    0.0068    0.4520; .2 .2 .2];
-    colours.cond = [0.6350    0.0780    0.1840; 0.4940    0.1840    0.5560; .2 .2 .2];
+%     colours.cond = [1 0 0 ; 0 0 1; .2 .2 .2];
+%     colours.cond = [0 .8 0; 1 0 1; .2 .2 .2];
+%     colours.cond = [0.9    0.1    0.1; 0.5    0.2    0.9; .2 .2 .2];
+    colours.cond = [1 .8 0 ; 0 .8 1; .2 .2 .2];
     colours.CoM = [0 0 1; 1 0 0; .2 .2 .2]; %[0.4660    0.6740    0.1880; 0.9290    0.6940    0.1250; .2 .2 .2]; % CoM
     colours.conf3 = [  0    0.4470    0.8; .0    0.7510   0;  0.8500    0.3250    0.0980; .2 .2 .2];%colours.certainty;
     % colours.conf3 = [0.0937    0.3636    0.6709; 0.6796    0.8444    0.6806; 0.5829    0.2780    0.0740; .2 .2 .2]; % av within confinr1 pairs
@@ -49,20 +52,20 @@ set(0,'DefaultAxesFontSize',14);
         PlotTask2Topos([2 1 2], {'Task 2'}, colours.cmap, mapLims, 0); % do excludeCoMFromCert
 
     else % do main figures
+%         figure(1);
+%         PlotTask1Traces([3 2 1:2], respWin, 'Experiment 1', showErrBars, colours, lines)
+%         PlotBehFigsTask1([3 2 3; 3 2 4; 3 2 5; 3 2 6], {''}, colours, [.4 1; .4 1; 1.3 3; 350 650]);
+% 
+        % with CoM excluded 
         figure();
-        PlotTask1Traces([3 2 1:2], respWin, 'Experiment 1', showErrBars, colours, lines)
-        PlotBehFigsTask1([3 2 3; 3 2 4; 3 2 5; 3 2 6], {''}, colours, [.5 .9; .5 .9; 1.8 2.8; 350 650]);
-
-%         % with CoM excluded
-        figure();
-        PlotTask2Traces([321; 322], respWin, {'Experiment 2: Extinguished', 'Experiment 2: Continued'}, showErrBars, colours, 0, lines); % do excludeCoMFromCert
-        PlotBehFigsTask2([3 2 3; 3 2 4; 3 2 5; 3 2 6], {''}, colours, [.7 .9; 300 1100; 1.8 2.8; 0 .7]);
+        PlotTask2Traces([321; 322], respWin, {'Experiment 2: Extinguished', 'Experiment 2: Continued'}, showErrBars, colours, 1, lines); % do excludeCoMFromCert
+        PlotBehFigsTask2([3 2 3; 3 2 4; 3 2 5; 3 2 6], {''}, colours, [.6 1; 300 1100; 2 6; 0 1]);
     
-        figure();
-        if ~exist('topoplot','file'); eeglab nogui; end
-        mapLims = [-20 20];
-        PlotTask1Topo(121, 'Experiment 1', colours.cmap, mapLims);
-        PlotTask2Topos([1 2 2], {'Experiment 2'}, colours.cmap, mapLims, 0); % do excludeCoMFromCert
+%         figure();
+%         if ~exist('topoplot','file'); eeglab nogui; end
+%         mapLims = [-20 20];
+%         PlotTask1Topo(121, 'Experiment 1', colours.cmap, mapLims);
+%         PlotTask2Topos([1 2 2], {'Experiment 2'}, colours.cmap, mapLims, 0); % do excludeCoMFromCert
 
     end
 
@@ -242,9 +245,9 @@ doStats=1;
     diffFlips(2) = 1; % High - Low
     labels.diffNames(2) = {'Certain - Maybe'};
     if excludeCoMFromCert
-        labels.certainty = {'maybe no-CoM', 'probably no-CoM', 'certain no-CoM'}; % no-com
+        labels.certainty = {'maybe (no-CoM)', 'probably (no-CoM)', 'certain (no-CoM)'}; % no-com
     else
-        labels.certainty = {'maybe CoM/no-CoM', 'probably CoM/no-CoM', 'certain CoM/no-CoM'};
+        labels.certainty = {'maybe (CoM/no-CoM)', 'probably (CoM/no-CoM)', 'certain (CoM/no-CoM)'};
     end
     %% final figure - prep
     
@@ -352,6 +355,8 @@ end
 
 function PlotBehFigsTask1(subplotInds, titles, colours, ylims)
     % load up data, do some splitting, and then plot the figure
+
+    plotIndivs = 1; % only on bar-charts
             
     excludeByRT = 1;
     excludeBadPps = 1;
@@ -408,6 +413,9 @@ function PlotBehFigsTask1(subplotInds, titles, colours, ylims)
     % 4-6: certainty: acc*cond, and Com + confInr1
     for i = 1:size(subplotInds,1)
         subplot(subplotInds(i,1), subplotInds(i,2), subplotInds(i,3));
+        if plotIndivs
+            c = get(gca,'ColorOrder'); % store this
+        end
         set(gca,'ColorOrder',colours.stimDur,'nextplot','replacechildren');
 
         if strcmp(varNames2{i}, 'acc')
@@ -416,6 +424,13 @@ function PlotBehFigsTask1(subplotInds, titles, colours, ylims)
             h.FaceColor = 'flat';
             h.CData = colours.stimDur(1:3,:);
             set(gca,'XTickLabel',labels.stimDur);
+
+            if plotIndivs
+                hold on;
+                set(gca,'ColorOrder', [colours.stimDur; c]);
+                plot((1:3)' + rand(size(behDataByDur.(varNames2{i}), [1 2]))'/10 - .05 , nanmean(behDataByDur.(varNames2{i}),3)', '-x');
+            end
+
 
             ylabel(ylabels{i});
             xlabel('stimulus duration');
@@ -432,6 +447,12 @@ function PlotBehFigsTask1(subplotInds, titles, colours, ylims)
             h.FaceColor = 'flat';
             h.CData = colours.certainty(1:3,:);
             set(gca,'XTickLabel',labels.certainty);
+
+            if plotIndivs
+                hold on;
+                set(gca,'ColorOrder', [colours.certainty; c]);
+                plot((1:3)' + rand(size(accByCert))'/10 - .05 , accByCert', '-x');
+            end
 
             ylim(ylims(i,:));
             xlim([ .25 3.75]);
@@ -465,6 +486,14 @@ function PlotBehFigsTask1(subplotInds, titles, colours, ylims)
             durDataByAcc.(varNames2{i}) = groupMeans(behDataByDur.(varNames2{i}),3,behDataByDur.acc,'dim'); %[ pp cond acc tr]
             h = errorBarPlot(permute(nanmean(durDataByAcc.(varNames2{i}),4),[1,3,2]), 'type','bar');
             
+            if plotIndivs
+                hold on;
+                set(gca,'ColorOrder', [colours.stimDur; c]);
+                x = cat(1, h.XEndPoints);
+                for ii = 1:2
+                    plot(x(:,ii) + rand(size(durDataByAcc.(varNames2{i}), [1 2]))'/10 - .05 , sq(nanmean(durDataByAcc.(varNames2{i})(:,:,ii,:),4))', '-x');
+                end
+            end
             set(gca,'XTickLabel',labels.acc);
             ylim(ylims(i,:));
 
@@ -486,6 +515,8 @@ end
 function PlotBehFigsTask2(subplotInds, titles, colours, ylims)
     % load up data, do some splitting, and then plot the figure
             
+    plotIndivs = 1;
+    
     excludeByRT = 1;
     excludeBadPps = 1;
     excludeTooFew = 1;
@@ -529,7 +560,7 @@ function PlotBehFigsTask2(subplotInds, titles, colours, ylims)
         
     labels.bothAcc = {'initial','final'};
     labels.bothRT = labels.bothAcc;
-    
+    labels.certainty = {'maybe','probably','certain'};
     %%   
        
     behDataByCond = structfun(@(x) groupMeans(x,2,behData.cond,'dim'), behData, 'UniformOutput',0);
@@ -539,12 +570,16 @@ function PlotBehFigsTask2(subplotInds, titles, colours, ylims)
     
     behDataByCond.bothRT = nancat(3, groupMeans(behData.RT,2,behData.cond), groupMeans(behData.confRT,2,behData.cond)); %[pp cond init/conf]
 
+    nPP = size(behData.acc,1);
     % 1 = acc: time*cond
     varNames1 = {'bothAcc','bothRT'};
     ylabels1 = {'p(correct)', 'mean initial RT (ms)'};
     for i = 1
         subplot(subplotInds(i,1), subplotInds(i,2), subplotInds(i,3));
-        
+        if plotIndivs
+            c = get(gca,'ColorOrder'); % store this
+        end
+
         set(gca,'ColorOrder',colours.cond,'nextplot','replacechildren');
         
         h = errorBarPlot(permute(behDataByCond.(varNames1{i}),[1,3,2]), 'type','bar');%','plotargs',{'LineWidth',2}); % permute to make cond the legend
@@ -552,6 +587,16 @@ function PlotBehFigsTask2(subplotInds, titles, colours, ylims)
         ylabel(ylabels1{i});
         xlabel('response');
         ylim(ylims(i,:));
+        
+        if plotIndivs
+            hold on
+            set(gca,'ColorOrder', [colours.cond; c]);
+
+            x = cat(1, h.XEndPoints);
+            for ii = 1:2
+                plot(x(:,ii) + rand(nPP,2)'/10 - .05 , behDataByCond.(varNames1{i})(:,:,ii)', '-x');
+            end
+        end
 
         if i==1; legend(h, labels.cond,'Location','Best'); end
         
@@ -578,7 +623,7 @@ function PlotBehFigsTask2(subplotInds, titles, colours, ylims)
     % initial RT first
     % RT into [pp cond acc cert tr]
     rtByCondAcc = groupMeans(behDataByCond.RT,3,behDataByCond.acc,'dim'); %[pp cond acc tr]
-    certByCondAcc = groupMeans(behDataByCond.certainty,3,behDataByCond.acc,'dim');
+    certByCondAcc = groupMeans(behDataByCond.confInR1,3,behDataByCond.acc,'dim');
     rtByCondAccCert = groupMeans(rtByCondAcc,4,certByCondAcc,'dim'); %[pp cond acc cert tr]
 
     % also get confRT
@@ -590,14 +635,16 @@ function PlotBehFigsTask2(subplotInds, titles, colours, ylims)
     set(gca,'ColorOrder',colours.cond(1:2,:),'nextplot','replacechildren', 'LineStyleOrder',{'--','-'});
     hold on;
     h = errorBarPlot(reshape(permute(nanmean(rtByCondAccCert,5),[1,4,2,3]),30,[],4), 'type','line','plotargs',{'LineWidth',2});
+    [h.LineStyle] = deal('none'); % hide lines
+    h = JoinUpErrorPoints(h, [1 2; 2 3; 4 5; 5 6]); % join them
     
-    set(gca,'XTick',1:6,'XTickLabel',labels.certainty);
+    set(gca,'XTick',1:6,'XTickLabel',[flip(labels.certainty) labels.certainty]);
     ylabel(ylabels1(2));
 %     ylim(ylims(2,:));
     yt = yticks;
     yticks(yt(mod(yt,100)==0)); % only 100-markers
-    xlabel('confidence report');
-    xlim([.5 3.5]);
+    xlabel({'CoM                no-CoM', 'confidence-in-initial-choice'});
+    xlim([.5 6.5]);
     hold on; emptyLegend(4, { {'Color', colours.cond(2,:),'LineStyle','-'},{'Color', colours.cond(1,:),'LineStyle','-'}, {'k','LineStyle','-'}, {'k','LineStyle','--'} }, {'LineWidth',2}, [flip(labels.cond) {'Initial Correct'},{'Initial Error'}], {'Location','Best'});
 
 %     % plot conf RT on right yaxis
@@ -617,8 +664,8 @@ function PlotBehFigsTask2(subplotInds, titles, colours, ylims)
 %     hold on; emptyLegend(4, { {'Color', colours.cond(2,:),'LineStyle','-'},{'Color', colours.cond(1,:),'LineStyle','-'}, {'k','LineStyle','-'}, {'k','LineStyle','--'} }, {'LineWidth',2}, [flip(labels.cond) {'Initial Correct'},{'Initial Error'}], {'Location','Best'});
 
 
-    ylabels = { 'mean confidence-in-final-choice', 'p(change-of-mind)'};
-    varNames2 = {'certainty', 'CoM'};
+    ylabels = { 'mean confidence-in-initial-choice', 'p(change-of-mind)'};
+    varNames2 = {'confInR1', 'CoM'};
     % 4-6: conf3: acc*cond, and Com + confInr1
     for i = 1:length(varNames2)
         subplot(subplotInds(2+i,1), subplotInds(2+i,2), subplotInds(2+i,3));
@@ -627,6 +674,16 @@ function PlotBehFigsTask2(subplotInds, titles, colours, ylims)
         condDataByAcc.(varNames2{i}) = groupMeans(behDataByCond.(varNames2{i}),3,behDataByCond.acc,'dim'); %[ pp cond acc tr]
         h = errorBarPlot(permute(nanmean(condDataByAcc.(varNames2{i}),4),[1,3,2]), 'type','bar');
         set(gca,'XTickLabel',labels.acc);
+        
+        if plotIndivs
+            hold on
+            x = cat(1, h.XEndPoints);
+            set(gca,'ColorOrder', [colours.cond; c]);
+            for ii = 1:2
+                h1 = plot(x(:,ii) + rand(nPP,2)'/10 - .05 , nanmean(condDataByAcc.(varNames2{i})(:,:,ii,:),4)', '-x');
+
+            end
+        end
 
 %         h = violin(reshape(permute(nanmean(condDataByAcc.(varNames2{i}),4),[1,2,3]),[],4),'x',[.7 1.3 2.7 3.3], 'medc',[],'facecolor',repmat(colours.cond(1:2,:),2,1),'facealpha',1,'plotlegend',0);
 %         set(gca,'XTick',[1 3], 'XTickLabel',labels.acc);

@@ -3,8 +3,8 @@ function GetCPPRespCueTopoRDM
 % relative to response cue onset (evidence offset)
 
 load('./Saves/ExtractEpochs.mat');
-eeg.respCueWindowS = (-512:256) + 540; % to add on to evOnset time
-eeg.respCueTimes = ((-512:256) ./ 512) .* 1000; % times
+eeg.respCueWindowS = (-512:512) + 540; % to add on to evOnset time
+eeg.respCueTimes = ((-512:512) ./ 512) .* 1000; % times
 eeg.nRespCueSamples = length(eeg.respCueTimes);
 
 useCSD = 1;
@@ -21,11 +21,12 @@ load('./Saves/FlagArtefacts.mat','isFlagged');
 %% 
 
 
-wins = -1000:100:500;
+wins = -700:100:1000;
 winInds = sum(eeg.respCueTimes > wins'); % 1:21
-winInds(1) = 1; % include -1000 in this
+% winInds(1) = 1; % include -1000 in this
 
 tInds = isBetween(eeg.respCueTimes, wins([1 end]));
+winInds(find(tInds,1)) = 1; % -500 in first bin
 
 respCueSlopeTopo = NaN(fileInfo.nPP, fileInfo.maxTr, eeg.nChans);
 respCueMeanTopo = NaN(fileInfo.nPP, fileInfo.maxTr, eeg.nChans, length(wins)-1);

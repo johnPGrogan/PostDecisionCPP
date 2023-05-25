@@ -57,12 +57,14 @@ data.rInds = isBetween(data.eeg.respTimes, data.respWin);
 
 colours.certainty = [  0    0.4470    0.8; .0    0.7510   0;  0.8500    0.3250    0.0980; .2 .2 .2];
 % colours.certainty = [0.3731    0.8864    0.7382; 0.6115    0.5872    0.1107; 0.5505    0.0068    0.4520; .2 .2 .2];
-colours.cond = [0.6350    0.0780    0.1840; 0.4940    0.1840    0.5560; .2 .2 .2];
+% colours.cond = [1 0 0; 0 0 1; .2 .2 .2];
+colours.cond = [1 .8 0 ; 0 .8 1; .2 .2 .2];
 colours.CoM = [0 0 1; 1 0 0; .2 .2 .2]; %[0.4660    0.6740    0.1880; 0.9290    0.6940    0.1250; .2 .2 .2]; % CoM
 colours.conf3 = [  0    0.4470    0.8; .0    0.7510   0;  0.8500    0.3250    0.0980; .2 .2 .2];%colours.certainty;
 % colours.conf3 = [0.0937    0.3636    0.6709; 0.6796    0.8444    0.6806; 0.5829    0.2780    0.0740; .2 .2 .2]; % av within confinr1 pairs
+% colours.conf3 =  [flipud(crameri('roma',3)); .2 .2 .2];
 colours.confInR1 =  [flipud(crameri('roma',6)); .2 .2 .2];
-colours.acc=colours.cond;
+colours.acc= [1 0 0; 0 0 1];
 colours.cmap = crameri('vik');
 data.colours = colours;    
 
@@ -83,7 +85,7 @@ data.lines.styles = styles;
 data.alphas = table2struct(array2table([.2 .2 .2 .1 .2],'VariableNames',data.factors));
 
 data.names.confInR1 = 'confidence-in-initial-choice';
-data.names.certainty = 'confidence-in-final-choice';
+data.names.certainty = 'final-certainty';
 data.names.conf3 = 'confidence-in-initial-choice: binned';
 data.names.CoM = 'change-of-mind';
 data.names.acc = 'initial accuracy';
@@ -102,10 +104,11 @@ data.nF = 3; % incl CoM
 %% plot
 if exist('doSuppl','var') && doSuppl % do supplementary figure
 
-    % Continued vs Extinguished
-    figure();
-    plotByCond([111],data)
-    
+%     % Continued vs Extinguished
+%     figure();
+%     plotByCond([111],data)
+
+   
     % supplementary figure - split by initial accuracy
     figure();
     iFs = 1;
@@ -114,17 +117,17 @@ if exist('doSuppl','var') && doSuppl % do supplementary figure
 else
 
     
-    figure();
+    figure(1);
     plotByCondFac([321:326], data, [4 5 2]);
 
 
 
     %% do topoplots, together or separately
     
-    if ~exist('topoplot','file'); eeglab nogui; end
-    
-    figure();
-    plotTopoContLow(data);
+%     if ~exist('topoplot','file'); eeglab nogui; end
+%     
+%     figure();
+%     plotTopoContLow(data);
 
 end
 %%  

@@ -7,10 +7,6 @@ function PlotPaperFigures()
 % 
 % use print('-vector','-dsvg','FILENAME') to save topoplots as svg
 % 
-% make sure Crameri, matlib, eeglab, are on the path
-addpath ../../Funcs/
-
-
 
 %% main Figures
 
@@ -84,6 +80,21 @@ PlotSSVEP30Fig;
 % ContinuedAccumulation/Analysis/Saves/BehDataLoad.mat
 % ContinuedAccumulation/Analysis/Saves/FlagArtefacts3.mat
 
+
+%% suppl fig 6 - CSD traces
+
+PlotNewFigS6();
+% Requires: 
+% ../../RDMManualConf/Analysis/Saves/CPPAnalysis_Volt.mat
+% ../../ContinuedAccumulation/Analysis/Saves/CPPAnalysis_Volt_ExclCoMFromCert.mat
+% ../../ContinuedAccumulation/Analysis/Saves/CPPAnalysis_Volt_.mat
+
+
+%% suppl fig 7 - expt 1 stim/respCue/resp locked + topos
+
+PlotNewFigS7();
+% Requires:
+% RDMManualConf/Analysis/Saves/CPPAnalysis_CSD.mat
 
 
 end
